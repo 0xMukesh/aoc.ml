@@ -1,4 +1,5 @@
-(executable
- (public_name day01)
- (name day01)
- (libraries base stdio utils))
+(executables
+ (public_names day01 day02)
+ (libraries base stdio utils)
+ (preprocess
+   (pps ppx_deriving.show)))
