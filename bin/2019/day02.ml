@@ -35,23 +35,19 @@ let run_intcode (input : int array) (use_1202 : bool) : (int, intcode_error) Res
       begin match input.(pc) with
       | 99 -> Ok ()
       | (1 | 2) as op ->
-        if pc + 3 >= n
-        then Error (Memory_out_of_bounds pc)
+        let a_pos = input.(pc + 1) in
+        let b_pos = input.(pc + 2) in
+        let output_pos = input.(pc + 3) in
+        let is_in_bounds = Utils.is_in_bounds ~length:n in
+
+        if not (is_in_bounds a_pos && is_in_bounds b_pos && is_in_bounds output_pos)
+        then Error (Memory_out_of_bounds output_pos)
         else begin
-          let a_pos = input.(pc + 1) in
-          let b_pos = input.(pc + 2) in
-          let output_pos = input.(pc + 3) in
-          let is_in_bounds = Utils.is_in_bounds ~length:n in
+          let a = input.(a_pos) in
+          let b = input.(b_pos) in
 
-          if not (is_in_bounds a_pos && is_in_bounds b_pos && is_in_bounds output_pos)
-          then Error (Memory_out_of_bounds output_pos)
-          else begin
-            let a = input.(a_pos) in
-            let b = input.(b_pos) in
-
-            input.(output_pos) <- (if op = 1 then a + b else a * b);
-            loop (pc + 4)
-          end
+          input.(output_pos) <- (if op = 1 then a + b else a * b);
+          loop (pc + 4)
         end
       | opcode -> Error (Unknown_opcode opcode)
       end

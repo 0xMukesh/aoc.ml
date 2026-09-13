@@ -1,7 +1,7 @@
 open Base
 open Stdio
 
-let filename = "./_data/2019/input.txt"
+let filename = "./_data/2019/01/input.txt"
 let data = Utils.read_lines filename |> List.map ~f:Int.of_string
 
 let process_masses (data : int list) ~(f : int -> int) : int =

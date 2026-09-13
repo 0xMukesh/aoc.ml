@@ -1,5 +1,6 @@
 (executables
- (public_names day01 day02)
+ (names day01 day02)
+ (public_names y19d01 y19d02)
  (libraries base stdio utils)
  (preprocess
    (pps ppx_deriving.show)))
