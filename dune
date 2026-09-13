@@ -1,4 +1,0 @@
-(executable
- (name main)
- (modules main point2d geometry)
- (libraries base stdio))
