@@ -15,6 +15,9 @@
  (name aoc)
  (synopsis "Advent of Code solutions in OCaml")
  (description "Advent of Code solutions in OCaml")
- (depends ocaml)
+ (depends
+  ocaml
+  base
+  core)
  (tags
   ("advent-of-code")))
