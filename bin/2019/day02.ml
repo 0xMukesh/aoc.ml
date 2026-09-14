@@ -71,7 +71,7 @@ let find_suitable_pairs (input : int array) (desired_result : int)
       trial_input.(1) <- noun;
       trial_input.(2) <- verb;
 
-      match run_intcode trial_input true with
+      match run_intcode trial_input false with
       | Ok result when result = desired_result -> Ok (noun, verb)
       | Ok _ -> search noun (verb + 1)
       | Error (Memory_out_of_bounds position) -> Error (Search_out_of_bounds position)
