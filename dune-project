@@ -18,6 +18,12 @@
  (depends
   ocaml
   base
-  core)
+  core
+  core_unix
+  ppx_deriving
+
+  ;; dev setup
+  (ocaml-lsp-server :with-dev-setup)
+  (ocamlformat :with-dev-setup))
  (tags
-  ("advent-of-code")))
+  (advent-of-code)))

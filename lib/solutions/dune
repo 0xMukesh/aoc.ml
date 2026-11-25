@@ -1,0 +1,6 @@
+(include_subdirs qualified)
+
+(library
+ (name solutions)
+ (libraries base core utils)
+ (preprocess (pps ppx_deriving.show)))

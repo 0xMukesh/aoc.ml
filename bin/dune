@@ -1,0 +1,5 @@
+(executable
+ (public_name main)
+ (name main)
+ (libraries solutions core_unix.command_unix)
+ (preprocess (pps ppx_let)))

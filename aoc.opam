@@ -12,6 +12,10 @@ depends: [
   "ocaml"
   "base"
   "core"
+  "core_unix"
+  "ppx_deriving"
+  "ocaml-lsp-server" {with-dev-setup}
+  "ocamlformat" {with-dev-setup}
   "odoc" {with-doc}
 ]
 build: [

@@ -2,14 +2,6 @@ open Base
 open Stdio
 open Result
 
-let filename = "./_data/2019/02/input.txt"
-
-let data =
-  match Utils.read_lines filename with
-  | [] -> Array.of_list []
-  | x :: _ -> String.split ~on:',' x |> List.map ~f:Int.of_string |> Array.of_list
-;;
-
 type intcode_error =
   | Memory_out_of_bounds of int
   | Unknown_opcode of int
@@ -38,7 +30,7 @@ let run_intcode (input : int array) (use_1202 : bool) : (int, intcode_error) Res
         let a_pos = input.(pc + 1) in
         let b_pos = input.(pc + 2) in
         let output_pos = input.(pc + 3) in
-        let is_in_bounds = Utils.is_in_bounds ~length:n in
+        let is_in_bounds pos = pos >= 0 && pos < n in
 
         if not (is_in_bounds a_pos && is_in_bounds b_pos && is_in_bounds output_pos)
         then Error (Memory_out_of_bounds output_pos)
@@ -81,11 +73,16 @@ let find_suitable_pairs (input : int array) (desired_result : int)
   search 0 0
 ;;
 
-let () =
-  begin match run_intcode (Array.copy data) true with
-  | Ok result -> printf "%d\n" result
-  | Error err -> printf "%s\n" (show_intcode_error err)
-  end;
+let solve ~input =
+  let data =
+    match Utils.read_lines input with
+    | [] -> Array.of_list []
+    | x :: _ -> String.split ~on:',' x |> List.map ~f:Int.of_string |> Array.of_list
+  in
+
+  (match run_intcode (Array.copy data) true with
+   | Ok result -> printf "%d\n" result
+   | Error err -> printf "%s\n" (show_intcode_error err));
 
   let search_desired_result = 19690720 in
   match find_suitable_pairs (Array.copy data) search_desired_result with
