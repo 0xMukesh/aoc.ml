@@ -1,7 +1,7 @@
 open Base
 open Stdio
 
-let process_masses (data : int list) ~(f : int -> int) : int =
+let process_masses data ~(f : int -> int) =
   List.fold data ~init:0 ~f:(fun acc x -> acc + f x)
 ;;
 
@@ -18,7 +18,7 @@ let rec total_fuel_requirement mass ~accum =
 ;;
 
 let solve ~input =
-  let data = Utils.read_lines input |> List.map ~f:Int.of_string in
+  let data = Utils.read_lines ~path:input |> List.map ~f:Int.of_string in
   printf "%d\n" (process_masses data ~f:fuel_requirement_for_mass);
   printf "%d\n" (process_masses data ~f:(total_fuel_requirement ~accum:0))
 ;;

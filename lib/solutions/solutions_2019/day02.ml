@@ -1,6 +1,5 @@
 open Base
 open Stdio
-open Result
 
 type intcode_error =
   | Memory_out_of_bounds of int
@@ -12,7 +11,7 @@ type search_error =
   | No_pair_found
 [@@deriving show]
 
-let run_intcode (input : int array) (use_1202 : bool) : (int, intcode_error) Result.t =
+let run_intcode input ~use_1202 =
   if use_1202
   then begin
     input.(1) <- 12;
@@ -49,9 +48,7 @@ let run_intcode (input : int array) (use_1202 : bool) : (int, intcode_error) Res
   | Error message -> Error message
 ;;
 
-let find_suitable_pairs (input : int array) (desired_result : int)
-  : (int * int, search_error) Result.t
-  =
+let find_suitable_pairs input ~desired_result =
   let original_state = Array.copy input in
   let rec search noun verb =
     if noun > 99
@@ -63,7 +60,7 @@ let find_suitable_pairs (input : int array) (desired_result : int)
       trial_input.(1) <- noun;
       trial_input.(2) <- verb;
 
-      match run_intcode trial_input false with
+      match run_intcode trial_input ~use_1202:false with
       | Ok result when result = desired_result -> Ok (noun, verb)
       | Ok _ -> search noun (verb + 1)
       | Error (Memory_out_of_bounds position) -> Error (Search_out_of_bounds position)
@@ -75,17 +72,17 @@ let find_suitable_pairs (input : int array) (desired_result : int)
 
 let solve ~input =
   let data =
-    match Utils.read_lines input with
+    match Utils.read_lines ~path:input with
     | [] -> Array.of_list []
     | x :: _ -> String.split ~on:',' x |> List.map ~f:Int.of_string |> Array.of_list
   in
 
-  (match run_intcode (Array.copy data) true with
+  (match run_intcode (Array.copy data) ~use_1202:true with
    | Ok result -> printf "%d\n" result
    | Error err -> printf "%s\n" (show_intcode_error err));
 
   let search_desired_result = 19690720 in
-  match find_suitable_pairs (Array.copy data) search_desired_result with
+  match find_suitable_pairs data ~desired_result:search_desired_result with
   | Ok (noun, verb) -> printf "%d\n" ((100 * noun) + verb)
   | Error err -> printf "%s\n" (show_search_error err)
 ;;
