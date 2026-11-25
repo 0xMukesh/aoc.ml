@@ -2,7 +2,6 @@ open Base
 open Stdio
 
 type dir =
-  | Ignore [@value -1]
   | Up
   | Left
   | Down
@@ -30,7 +29,6 @@ module Wire = struct
     let new_pos =
       let x, y = t.pos in
       match dir with
-      | Ignore -> x, y
       | Up -> x, y - 1
       | Left -> x - 1, y
       | Down -> x, y + 1
