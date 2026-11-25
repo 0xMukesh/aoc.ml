@@ -1,5 +1,6 @@
 open Base
 open Stdio
+open Core
 
 type intcode_error =
   | Memory_out_of_bounds of int
@@ -13,10 +14,9 @@ type search_error =
 
 let run_intcode input ~use_1202 =
   if use_1202
-  then begin
+  then (
     input.(1) <- 12;
-    input.(2) <- 2
-  end;
+    input.(2) <- 2);
 
   let n = Array.length input in
   let rec loop pc =
@@ -43,6 +43,7 @@ let run_intcode input ~use_1202 =
       | opcode -> Error (Unknown_opcode opcode)
       end
   in
+
   match loop 0 with
   | Ok () -> Ok input.(0)
   | Error message -> Error message
@@ -70,19 +71,21 @@ let find_suitable_pairs input ~desired_result =
   search 0 0
 ;;
 
-let solve ~input =
+let solve ~input : Solution.t =
   let data =
     match Utils.read_lines ~path:input with
     | [] -> Array.of_list []
     | x :: _ -> String.split ~on:',' x |> List.map ~f:Int.of_string |> Array.of_list
   in
-
-  (match run_intcode (Array.copy data) ~use_1202:true with
-   | Ok result -> printf "%d\n" result
-   | Error err -> printf "%s\n" (show_intcode_error err));
-
-  let search_desired_result = 19690720 in
-  match find_suitable_pairs data ~desired_result:search_desired_result with
-  | Ok (noun, verb) -> printf "%d\n" ((100 * noun) + verb)
-  | Error err -> printf "%s\n" (show_search_error err)
+  let part_01 =
+    match run_intcode (Array.copy data) ~use_1202:true with
+    | Ok result -> Int.to_string result
+    | Error err -> sprintf "Error: %s" (show_intcode_error err)
+  in
+  let part_02 =
+    match find_suitable_pairs data ~desired_result:19690720 with
+    | Ok (noun, verb) -> (100 * noun) + verb |> Int.to_string
+    | Error err -> sprintf "Error: %s" (show_search_error err)
+  in
+  { part_01; part_02 }
 ;;

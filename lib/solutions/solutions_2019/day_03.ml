@@ -98,7 +98,7 @@ let advance_second_wire path table ~solver =
   minimum
 ;;
 
-let solve ~input =
+let solve ~input : Solution.t =
   let data =
     Utils.read_lines ~path:input
     |> List.map ~f:(fun x -> String.split x ~on:',')
@@ -113,7 +113,11 @@ let solve ~input =
   in
   let table = Hashtbl.create (module Coord) in
   let _ = advance_first_wire first_path table in
-  let part_01_result = advance_second_wire second_path table ~solver:part_01_solver in
-  let part_02_result = advance_second_wire second_path table ~solver:part_02_solver in
-  printf "%d %d\n" part_01_result part_02_result
+  let part_01 =
+    advance_second_wire second_path table ~solver:part_01_solver |> Int.to_string
+  in
+  let part_02 =
+    advance_second_wire second_path table ~solver:part_02_solver |> Int.to_string
+  in
+  { part_01; part_02 }
 ;;
