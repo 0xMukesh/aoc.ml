@@ -7,7 +7,7 @@ type search_error =
   | No_pair_found
 [@@deriving show]
 
-let run_intcode input =
+let run_modified_intcode input =
   input.(1) <- 12;
   input.(2) <- 2;
 
@@ -27,7 +27,7 @@ let find_suitable_pairs input ~desired_result =
       trial_input.(2) <- verb;
 
       match Utils.run_intcode trial_input with
-      | Ok result when result = desired_result -> Ok (noun, verb)
+      | Ok (result, _) when result = desired_result -> Ok (noun, verb)
       | Ok _ -> search noun (verb + 1)
       | Error (Memory_out_of_bounds position) -> Error (Search_out_of_bounds position)
       | Error (Unknown_opcode _) -> search noun (verb + 1)
@@ -37,14 +37,10 @@ let find_suitable_pairs input ~desired_result =
 ;;
 
 let solve ~input : Solution.t =
-  let data =
-    match Utils.read_lines ~path:input with
-    | [] -> Array.of_list []
-    | x :: _ -> String.split ~on:',' x |> List.map ~f:Int.of_string |> Array.of_list
-  in
+  let data = Utils.read_intcode_input_from_file ~path:input in
   let part_01 =
-    match run_intcode (Array.copy data) with
-    | Ok result -> Int.to_string result
+    match run_modified_intcode (Array.copy data) with
+    | Ok (result, _) -> Int.to_string result
     | Error err -> sprintf "Error: %s" (Utils.show_intcode_error err)
   in
   let part_02 =
