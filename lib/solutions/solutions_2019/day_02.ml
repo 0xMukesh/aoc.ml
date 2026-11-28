@@ -36,17 +36,17 @@ let find_suitable_pairs input ~desired_result =
   search 0 0
 ;;
 
-let solve ~input : Solution.t =
+let solve ~input =
   let data = Utils.read_intcode_input_from_file ~path:input in
   let part_01 =
     match run_modified_intcode (Array.copy data) with
-    | Ok (result, _) -> Int.to_string result
-    | Error err -> sprintf "Error: %s" (Utils.show_intcode_error err)
+    | Ok (result, _) -> result
+    | Error err -> failwith @@ sprintf "Error: %s" (Utils.show_intcode_error err)
   in
   let part_02 =
     match find_suitable_pairs data ~desired_result:19690720 with
-    | Ok (noun, verb) -> (100 * noun) + verb |> Int.to_string
-    | Error err -> sprintf "Error: %s" (show_search_error err)
+    | Ok (noun, verb) -> (100 * noun) + verb
+    | Error err -> failwith @@ sprintf "Error: %s" (show_search_error err)
   in
-  { part_01; part_02 }
+  Solution.make ~f:Int.to_string ~part_01 ~part_02
 ;;

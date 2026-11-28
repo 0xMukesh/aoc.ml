@@ -55,7 +55,7 @@ let part_02_checker s =
   is_monotonic && doubles_condition
 ;;
 
-let solve ~input : Solution.t =
+let solve ~input =
   let parts = Utils.read_lines ~path:input |> List.hd_exn |> String.split ~on:'-' in
   let low, high =
     match parts with
@@ -63,7 +63,7 @@ let solve ~input : Solution.t =
     | _ -> failwith "invalid input syntax"
   in
   let partial = count_digits ~low ~high in
-  let part_01 = partial ~checker:part_01_checker |> Int.to_string in
-  let part_02 = partial ~checker:part_02_checker |> Int.to_string in
-  { part_01; part_02 }
+  let part_01 = partial ~checker:part_01_checker in
+  let part_02 = partial ~checker:part_02_checker in
+  Solution.make ~f:Int.to_string ~part_01 ~part_02
 ;;

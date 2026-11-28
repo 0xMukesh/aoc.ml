@@ -17,11 +17,9 @@ let rec total_fuel_requirement mass ~accum =
   | _ -> accum
 ;;
 
-let solve ~input : Solution.t =
+let solve ~input =
   let data = Utils.read_lines ~path:input |> List.map ~f:Int.of_string in
-  let part_01 = process_masses data ~f:fuel_requirement_for_mass |> Int.to_string in
-  let part_02 =
-    process_masses data ~f:(total_fuel_requirement ~accum:0) |> Int.to_string
-  in
-  { part_01; part_02 }
+  let part_01 = process_masses data ~f:fuel_requirement_for_mass in
+  let part_02 = process_masses data ~f:(total_fuel_requirement ~accum:0) in
+  Solution.make ~f:Int.to_string ~part_01 ~part_02
 ;;

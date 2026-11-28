@@ -42,7 +42,7 @@ let dist_from_root (map : map) node =
   loop "COM" []
 ;;
 
-let find_first_common_ancestor a b =
+let find_first_common_ancestor_index a b =
   let a, b = List.rev a, List.rev b in
   let smaller, larger = if List.length a < List.length b then a, b else b, a in
   let rec loop smaller larger (prev, i) =
@@ -56,12 +56,12 @@ let find_first_common_ancestor a b =
   loop smaller larger ("", 0)
 ;;
 
-let solve ~input : Solution.t =
+let solve ~input =
   let data =
     Utils.read_lines ~path:input |> List.map ~f:(fun s -> split_once s ~on:')')
   in
   let map = build_map data in
-  let part_01 = total_routes map |> Int.to_string in
+  let part_01 = total_routes map in
   let you_path =
     dist_from_root map "YOU" |> Option.value_exn ~message:"failed to find YOU object"
   in
@@ -69,11 +69,9 @@ let solve ~input : Solution.t =
     dist_from_root map "SAN" |> Option.value_exn ~message:"failed to find SAN object"
   in
   let index =
-    find_first_common_ancestor you_path san_path
+    find_first_common_ancestor_index you_path san_path
     |> Option.value_exn ~message:"failed to find first common ancestor"
   in
-  let part_02 =
-    List.length you_path - index - 1 + (List.length san_path - index - 1) |> Int.to_string
-  in
-  { part_01; part_02 }
+  let part_02 = List.length you_path - index - 1 + (List.length san_path - index - 1) in
+  Solution.make ~f:Int.to_string ~part_01 ~part_02
 ;;
